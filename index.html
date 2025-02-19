@@ -4,91 +4,101 @@
   <meta charset="UTF-8">
   <!-- Meta viewport com viewport-fit=cover para dispositivos com notch -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>Jogo 2D</title>
-  <!-- Fonte Poppins -->
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <title>Jogo 2D Completo</title>
+  <!-- CSS solicitado para desativar seleção e estilos padrão de links/botões -->
   <style>
-    /* ------------------ VARIÁVEL CSS PARA ALTURA REAL ------------------ */
-    :root {
-      --vh: 100%; /* Valor inicial de fallback */
+    * { 
+        user-select: none; 
+        -webkit-user-select: none; 
+        -moz-user-select: none; 
+        -ms-user-select: none; 
+        -webkit-tap-highlight-color: transparent; 
     }
-
-    /* Reset e configuração global */
-    * {
+    a, button {
+        text-decoration: none;
+        outline: none;
+        border: none;
+        background: none;
+        color: inherit;
+    }
+    a:focus, button:focus {
+        outline: none;
+        box-shadow: none;
+    }
+  </style>
+  <!-- Estilos Gerais e Layout do Jogo -->
+  <style>
+    /* Reset básico e configurações globais */
+    html, body {
       margin: 0;
       padding: 0;
-      box-sizing: border-box;
-      user-select: none;
-    }
-
-    html, body {
       width: 100vw;
-      height: calc(var(--vh) * 100);
+      height: 100vh;
       overflow: hidden;
       font-family: 'Poppins', sans-serif;
       background: linear-gradient(to right, #ff99cc, #ff66b2);
     }
-
-    /* --------------------- SIDEBAR (Menu Principal) --------------------- */
+    
+    /* ---------------- Tela Principal (Landing Page) ---------------- */
+    .main-container {
+      display: flex;
+      flex-direction: row;
+      width: 100%;
+      height: 100%;
+    }
+    /* Sidebar (menu lateral) */
     .sidebar {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 300px;
-      height: calc(var(--vh) * 100);
+      flex: 0 0 25%;
       background: rgba(255,105,180,0.9);
-      border-right: 4px solid white;
       display: flex;
       flex-direction: column;
       align-items: center;
       padding: 20px;
-      overflow-y: auto; /* Permite rolagem vertical se necessário */
-      z-index: 3;
-      transition: opacity 0.5s ease;
+      box-sizing: border-box;
+      overflow-y: auto; /* Permite rolagem vertical se os itens ultrapassarem a altura */
     }
-    .logo {
-      text-align: center;
+    .sidebar .logo {
       margin-bottom: 30px;
+      text-align: center;
     }
-    .logo img {
-      max-width: 150px;
+    .sidebar .logo img {
+      width: 100px;
+      height: auto;
       margin-bottom: 10px;
     }
-    .logo span {
-      font-size: 36px;
+    .sidebar .logo span {
+      font-size: 28px;
       font-weight: 600;
       text-transform: uppercase;
+      color: white;
     }
-    .menu {
+    .sidebar .menu {
       width: 100%;
       display: flex;
       flex-direction: column;
       gap: 15px;
     }
-    .menu button {
+    .sidebar .menu button {
       width: 100%;
-      padding: 10px; /* Botões um pouco menores */
-      font-size: 18px;
+      padding: 10px;
+      font-size: 16px;
       font-weight: 600;
       color: white;
       background: #ff66b2;
-      border: 2px solid white;
-      border-radius: 15px;
-      text-align: left;
+      border-radius: 10px;
       cursor: pointer;
-      transition: background 0.3s, color 0.3s;
+      transition: background 0.3s;
     }
-    .menu button:hover {
+    .sidebar .menu button:hover {
       background: white;
       color: #ff66b2;
-      border-color: #ff66b2;
     }
-    .language-selector {
+    .sidebar .language-selector {
       margin-top: auto;
       display: flex;
       gap: 10px;
     }
-    .language-selector img {
+    .sidebar .language-selector img {
       width: 32px;
       height: 32px;
       cursor: pointer;
@@ -96,34 +106,70 @@
       border-radius: 50%;
       transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
     }
-    .language-selector img:hover {
+    .sidebar .language-selector img:hover {
       transform: scale(1.1);
       box-shadow: 0 2px 10px rgba(0,0,0,0.3);
       border-color: #3498db;
     }
-    .language-selector img.active {
+    .sidebar .language-selector img.active {
       border-color: #3498db;
       transform: scale(1.1);
     }
-
-    /* ---------------- FULL-SCREEN CONTENT (Configurações, Loja, Sair) ---------------- */
-    .full-screen-content {
+    
+    /* Área de conteúdo da tela principal */
+    .content-area {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+    .content-area .title {
+      font-size: 36px;
+      color: white;
+      text-align: center;
+    }
+    
+    /* Responsividade para telas menores */
+    @media only screen and (max-width: 768px) {
+      .sidebar {
+        flex: 0 0 35%;
+        padding: 15px;
+      }
+      .sidebar .logo span {
+        font-size: 24px;
+      }
+      .sidebar .menu button {
+        font-size: 14px;
+        padding: 8px;
+      }
+      .content-area .title {
+        font-size: 28px;
+      }
+    }
+    
+    /* ---------------- Seções do Jogo (Full-Screen, Loading, Modais, Jogo) ---------------- */
+    /* Esses elementos cobrem a área restante (à direita da sidebar) em modo landscape */
+    .full-screen-content, .global-loading, .action-loading, .confirm-modal, .game-container {
       position: fixed;
       top: 0;
-      left: 0;
-      width: 100vw;
-      height: calc(var(--vh) * 100);
+      left: 25%;
+      width: calc(100vw - 25%);
+      height: 100vh;
+      display: none;
+    }
+    .full-screen-content.hidden, .global-loading.hidden, .action-loading.hidden, .confirm-modal.hidden {
+      display: none;
+    }
+    .full-screen-content {
       background: #fff;
+      z-index: 4;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      z-index: 4;
       transition: opacity 0.5s ease;
-    }
-    .full-screen-content.hidden {
-      opacity: 0;
-      pointer-events: none;
     }
     .full-screen-content h2 {
       margin-bottom: 20px;
@@ -135,7 +181,6 @@
     .full-screen-content button {
       padding: 10px 20px;
       font-size: 18px;
-      border: none;
       border-radius: 8px;
       background: #ff66b2;
       color: white;
@@ -145,25 +190,14 @@
     .full-screen-content button:hover {
       background: #ff99cc;
     }
-
-    /* ---------------- GLOBAL LOADING SCREEN ---------------- */
     .global-loading {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: calc(var(--vh) * 100);
       background: #fce4ec;
+      z-index: 10000;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      z-index: 10000;
       transition: opacity 0.5s ease;
-    }
-    .global-loading.hidden {
-      opacity: 0;
-      pointer-events: none;
     }
     .global-loading .loading-content {
       text-align: center;
@@ -196,52 +230,28 @@
       from { transform: translateY(20px); opacity: 0; }
       to { transform: translateY(0); opacity: 1; }
     }
-
-    /* ---------------- ACTION LOADING SCREEN ---------------- */
     .action-loading {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: calc(var(--vh) * 100);
       background: #fce4ec;
+      z-index: 11000;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      z-index: 11000;
       transition: opacity 0.5s ease;
-    }
-    .action-loading.hidden {
-      opacity: 0;
-      pointer-events: none;
     }
     .action-loading .loading-content {
       text-align: center;
       color: #ff66b2;
     }
-
-    /* ---------------- CONFIRMATION MODAL ---------------- */
     .confirm-modal {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: calc(var(--vh) * 100);
       background: rgba(0,0,0,0.7);
+      z-index: 12000;
       display: flex;
       justify-content: center;
       align-items: center;
-      z-index: 12000;
       transition: opacity 0.3s;
     }
-    .confirm-modal.show {
-      opacity: 1;
-    }
-    .confirm-modal.hidden {
-      display: none;
-    }
-    .confirm-modal-content {
+    .confirm-modal .confirm-modal-content {
       background: #fff;
       color: #333;
       padding: 20px 30px;
@@ -250,36 +260,10 @@
       max-width: 400px;
       animation: scaleIn 0.5s ease-out;
     }
-    .confirm-modal-content .confirm-text {
-      font-size: 18px;
-      margin-bottom: 20px;
-    }
-    .confirm-modal-content .confirm-buttons {
-      display: flex;
-      gap: 20px;
-      justify-content: center;
-    }
-    .confirm-modal-content button {
-      padding: 8px 15px;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      font-size: 16px;
-    }
-    .confirm-modal-content button:first-child {
-      background: #ff66b2;
-      color: white;
-    }
-    .confirm-modal-content button:last-child {
-      background: #ccc;
-      color: #333;
-    }
     @keyframes scaleIn {
       from { transform: scale(0.8); opacity: 0; }
       to { transform: scale(1); opacity: 1; }
     }
-
-    /* ---------------- TRANSLATION POPUP ---------------- */
     .translate-popup {
       position: fixed;
       top: 20px;
@@ -291,22 +275,15 @@
       box-shadow: 0 0 10px rgba(0,0,0,0.3);
       z-index: 12000;
       transition: opacity 0.5s;
-      opacity: 0;
+      display: none;
     }
     .translate-popup.show {
-      opacity: 1;
+      display: block;
     }
-
-    /* ---------------- GAME CONTAINER ---------------- */
     .game-container {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: calc(var(--vh) * 100);
       background: black;
-      overflow: hidden;
       z-index: 5;
+      overflow: hidden;
       display: none;
     }
     .game-container img {
@@ -315,8 +292,6 @@
       object-fit: cover;
       cursor: pointer;
     }
-
-    /* ---------------- DIALOGUE BOX ---------------- */
     .dialog-box {
       position: absolute;
       bottom: 30%;
@@ -333,7 +308,6 @@
       background: #e0e0e0;
       color: #333;
       border: 1px solid #999;
-      overflow: hidden;
       transition: all 0.3s;
     }
     .dialog-box.masculine {
@@ -367,7 +341,6 @@
     }
     .dialog-buttons button {
       background: rgba(0, 0, 0, 0.5);
-      border: none;
       padding: 8px 12px;
       font-size: 14px;
       color: #fff;
@@ -378,8 +351,6 @@
     .dialog-buttons button:hover {
       background: rgba(0, 0, 0, 0.7);
     }
-
-    /* ---------------- CHOICE CONTAINER ---------------- */
     .choice-container {
       position: absolute;
       left: 50%;
@@ -396,92 +367,65 @@
     }
     .choice-container button {
       background: #ff66b2;
-      border: 2px solid white;
       padding: 10px;
       font-size: 18px;
       border-radius: 10px;
-      cursor: pointer;
       color: white;
       font-weight: 600;
+      border: 2px solid white;
+      cursor: pointer;
+      transition: background 0.3s;
     }
     .choice-container button:hover {
       background: white;
       color: #ff66b2;
     }
-
-    /* ---------------- LANDSCAPE AJUSTES ---------------- */
-    @media only screen and (orientation: landscape) {
-      .sidebar {
-        width: 25vw;
-        padding: 15px;
-      }
-      .menu button {
-        font-size: 20px;
-        padding: 12px;
-      }
-      .full-screen-content,
-      .global-loading,
-      .action-loading,
-      .confirm-modal,
-      .game-container {
-        left: 25vw;
-        width: calc(100vw - 25vw);
-      }
-      .dialog-box {
-        bottom: 20%;
-      }
-      .dialog-buttons button {
-        font-size: 14px;
-        padding: 4px 8px;
-      }
-      .language-selector img {
-        width: 28px;
-        height: 28px;
-      }
-    }
   </style>
 </head>
 <body>
-  <!-- Música Tema -->
-  <audio id="theme-music" src="theme-music.mp3" autoplay loop></audio>
-
-  <!-- Sidebar -->
-  <div class="sidebar" id="sidebar">
-    <div class="logo">
-      <img src="https://via.placeholder.com/150?text=Logo" alt="Logo">
-      <span>MEU JOGO</span>
+  <!-- Tela Principal (Landing Page) -->
+  <div class="main-container" id="mainContainer">
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+      <div class="logo">
+        <img src="https://via.placeholder.com/100?text=Logo" alt="Logo">
+        <span>Meu Jogo</span>
+      </div>
+      <div class="menu">
+        <button onclick="confirmStart()">Começar</button>
+        <button onclick="loadGame()">Carregar</button>
+        <button onclick="showContent('settings')">Configurações</button>
+        <button onclick="showContent('store')">Loja</button>
+        <button onclick="showContent('exit')">Sair</button>
+      </div>
+      <div class="language-selector">
+        <img src="https://flagcdn.com/48x36/br.png" alt="Português" onclick="translateContent('pt')">
+        <img src="https://flagcdn.com/48x36/us.png" alt="English" onclick="translateContent('en')">
+      </div>
     </div>
-    <div class="menu">
-      <button onclick="confirmStart()">Começar</button>
-      <button onclick="loadGame()">Carregar</button>
-      <button onclick="showContent('settings')">Configurações</button>
-      <button onclick="showContent('store')">Loja</button>
-      <button onclick="showContent('exit')">Sair</button>
-      <!-- Botões adicionais se necessário -->
-    </div>
-    <div class="language-selector">
-      <img src="https://flagcdn.com/48x36/br.png" alt="Português" onclick="translateContent('pt')">
-      <img src="https://flagcdn.com/48x36/us.png" alt="English" onclick="translateContent('en')">
+    <!-- Área de conteúdo principal da tela inicial -->
+    <div class="content-area">
+      <div class="title">Bem-vindo ao Jogo 2D</div>
     </div>
   </div>
-
-  <!-- Full-screen Content (Configurações, Loja, Sair) -->
-  <div id="content-settings" class="content full-screen-content hidden">
+  
+  <!-- Telas de Conteúdo Full-Screen (Configurações, Loja, Sair) -->
+  <div id="content-settings" class="full-screen-content hidden">
     <h2>Configurações</h2>
     <p>Aqui você pode ajustar as configurações do jogo.</p>
     <button onclick="backToMenu()">Voltar</button>
   </div>
-  <div id="content-store" class="content full-screen-content hidden">
+  <div id="content-store" class="full-screen-content hidden">
     <h2>Loja</h2>
     <p>Aqui você pode comprar itens e upgrades.</p>
     <button onclick="backToMenu()">Voltar</button>
   </div>
-  <div id="content-exit" class="content full-screen-content hidden">
+  <div id="content-exit" class="full-screen-content hidden">
     <h2>Sair</h2>
     <p>Você optou por sair do jogo.</p>
     <button onclick="backToMenu()">Voltar</button>
   </div>
-
+  
   <!-- Global Loading Screen -->
   <div id="global-loading" class="global-loading">
     <div class="loading-content">
@@ -490,7 +434,7 @@
       <div class="spinner"></div>
     </div>
   </div>
-
+  
   <!-- Action Loading Screen -->
   <div id="action-loading" class="action-loading hidden">
     <div class="loading-content">
@@ -498,7 +442,7 @@
       <div class="spinner"></div>
     </div>
   </div>
-
+  
   <!-- Confirmation Modal -->
   <div id="confirm-modal" class="confirm-modal hidden">
     <div class="confirm-modal-content">
@@ -509,13 +453,13 @@
       </div>
     </div>
   </div>
-
+  
   <!-- Translation Popup -->
   <div id="translate-popup" class="translate-popup hidden">
     <!-- Espaço para futuras traduções -->
   </div>
-
-  <!-- Game Mode -->
+  
+  <!-- Game Container (Modo de Jogo) -->
   <div id="game" class="game-container">
     <img id="game-image" src="" onclick="nextScene()" draggable="false">
     <div id="game-dialog" class="dialog-box neutral"></div>
@@ -528,7 +472,8 @@
     </div>
     <div id="choices" class="choice-container"></div>
   </div>
-
+  
+  <!-- JavaScript do Jogo -->
   <script>
     // Atualiza a variável CSS --vh com a altura real da viewport
     function setRealViewportHeight() {
@@ -538,30 +483,36 @@
     window.addEventListener('load', setRealViewportHeight);
     window.addEventListener('resize', setRealViewportHeight);
     window.addEventListener('orientationchange', setRealViewportHeight);
-
-    /* ------------------- SCRIPT DO JOGO ------------------- */
+    
+    // Variáveis do jogo
     let currentScene = 0;
     let autoMode = false;
     let autoInterval;
-    let currentLang = "pt"; // idioma atual
+    let currentLang = "pt";
     let globalLoadingTimeout;
-
+    
     function showContent(contentName) {
-      document.getElementById("sidebar").style.display = "none";
+      // Esconde a tela principal (landing page)
+      document.getElementById("mainContainer").style.display = "none";
+      // Esconde a sidebar (opcional, já que os conteúdos full-screen ocuparão a área à direita)
+      // document.getElementById("sidebar").style.display = "none";
+      // Mostra o conteúdo solicitado
       document.querySelectorAll(".full-screen-content").forEach(content => {
         content.classList.add("hidden");
       });
       const selectedContent = document.getElementById("content-" + contentName);
       if (selectedContent) {
         selectedContent.classList.remove("hidden");
+        selectedContent.style.display = "flex";
       }
     }
-
+    
     function backToMenu() {
       document.querySelectorAll(".full-screen-content").forEach(content => content.classList.add("hidden"));
-      document.getElementById("sidebar").style.display = "flex";
+      // Volta a mostrar a tela principal (landing page)
+      document.getElementById("mainContainer").style.display = "flex";
     }
-
+    
     const translations = {
       0: { pt: "Você acorda em um quarto estranho. Não lembra como chegou aqui." },
       1: { pt: "Você vê uma porta entreaberta e uma janela com vista para um jardim iluminado pelo sol." },
@@ -580,7 +531,7 @@
       14: { pt: "Você decide que é hora de recomeçar. Fim da demonstração." },
       15: { pt: "A personagem diz: 'Bem-vindo ao mundo de aventuras!'" }
     };
-
+    
     const choiceTranslations = {
       5: [
         { pt: "Investigar o corredor" },
@@ -591,7 +542,7 @@
         { pt: "Retornar à entrada" }
       ]
     };
-
+    
     const scenes = [
       { img: "https://raw.githubusercontent.com/natrona/nekoserver/refs/heads/main/download%20(15).jpeg", speaker: null, choice: null },
       { img: "https://via.placeholder.com/1920x1080/FF99CC/FFFFFF?text=Cena+2", speaker: null, choice: null },
@@ -624,12 +575,12 @@
       { img: "https://via.placeholder.com/1920x1080/FF1493/FFFFFF?text=Cena+15", speaker: null, choice: null },
       { img: "https://via.placeholder.com/1920x1080/AA66B2/FFFFFF?text=Cena+16", speaker: "character", choice: null }
     ];
-
+    
     function updateScene() {
       const choicesContainer = document.getElementById('choices');
       choicesContainer.innerHTML = "";
       choicesContainer.classList.remove("show");
-
+    
       document.getElementById('game-image').src = scenes[currentScene].img;
       let dialogHTML = "";
       const dialogBox = document.getElementById('game-dialog');
@@ -640,7 +591,23 @@
       }
       dialogHTML += `<div class="dialog-text">${translations[currentScene].pt}</div>`;
       dialogBox.innerHTML = dialogHTML;
-
+    
       if (!scenes[currentScene].speaker) {
         dialogBox.classList.add("neutral");
-      } else if (scenes[currentScene].speaker ==
+      } else if (scenes[currentScene].speaker === "player") {
+        dialogBox.classList.add("masculine");
+      } else if (scenes[currentScene].speaker === "character") {
+        dialogBox.classList.add("feminine");
+      }
+    
+      if (scenes[currentScene].choice) {
+        let choicesHTML = "";
+        const choices = choiceTranslations[currentScene];
+        choices.forEach((option, index) => {
+          choicesHTML += `<button onclick="choose(${scenes[currentScene].choice[index].next})">${option.pt}</button>`;
+        });
+        choicesContainer.innerHTML = choicesHTML;
+        void choicesContainer.offsetWidth;
+        choicesContainer.classList.add("show");
+      }
+      save
