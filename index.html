@@ -1,31 +1,22 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=Edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-
-  <title>HTML</title>
-  
-  <!-- HTML -->
-  
-
-  <!-- Custom Styles -->
-  <link rel="stylesheet" href="style.css">
-</head>
-
-<body>
-  <!-- Project -->
-  <script src="main.js"></script>
-  <!DOCTYPE html>
 <html lang="pt">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Ajuste o meta viewport para suportar 'viewport-fit=cover' e evitar zoom -->
+  <meta name="viewport" 
+        content="width=device-width, initial-scale=1.0,
+                 maximum-scale=1.0, user-scalable=no,
+                 viewport-fit=cover">
   <title>Jogo 2D</title>
-  <!-- Importa a fonte Poppins -->
+  <!-- Fonte Poppins -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
   <style>
+    /* ------------------ VARIÁVEL CSS PARA ALTURA REAL ------------------ */
+    :root {
+      --vh: 100%; /* Valor inicial de fallback */
+    }
+
     /* Reset e configuração global */
     * {
       margin: 0;
@@ -33,14 +24,19 @@
       box-sizing: border-box;
       user-select: none;
     }
-    body {
-      font-family: 'Poppins', sans-serif;
-      overflow: hidden;
-      position: fixed;
+
+    /* 
+      html e body ocupam a tela inteira usando a variável --vh,
+      evitando scroll em dispositivos móveis quando a barra some/aparece.
+    */
+    html, body {
       width: 100vw;
-      height: 100vh;
+      height: calc(var(--vh) * 100);
+      overflow: hidden;
+      font-family: 'Poppins', sans-serif;
       background: linear-gradient(to right, #ff99cc, #ff66b2);
     }
+
     /* Responsividade para dispositivos móveis em horizontal */
     @media only screen and (max-width: 768px) and (orientation: landscape) {
       .sidebar { width: 250px; padding: 15px; }
@@ -50,13 +46,15 @@
       .dialog-buttons button { font-size: 14px; padding: 4px 8px; }
       .language-selector img { width: 28px; height: 28px; }
     }
-    /* Sidebar (Menu Principal) */
+
+    /* --------------------- SIDEBAR (Menu Principal) -------------------- */
     .sidebar {
       position: fixed;
       top: 0;
       left: 0;
       width: 300px;
-      height: 100vh;
+      /* Substituir 100vh por calc(var(--vh) * 100) */
+      height: calc(var(--vh) * 100);
       background: rgba(255,105,180,0.9);
       border-right: 4px solid white;
       display: flex;
@@ -103,6 +101,7 @@
       color: #ff66b2;
       border-color: #ff66b2;
     }
+
     /* Seletor de idioma – ícones modernos */
     .language-selector {
       margin-top: auto;
@@ -126,15 +125,20 @@
       border-color: #3498db;
       transform: scale(1.1);
     }
+
     /* Música Tema (oculta controles) */
-    audio { display: none; }
-    /* Tela full-screen para conteúdos (Configurações, Loja, Saída) */
+    audio {
+      display: none;
+    }
+
+    /* ---------------- FULL-SCREEN CONTENT (Config, Loja, Sair) --------- */
     .full-screen-content {
       position: fixed;
       top: 0;
       left: 0;
       width: 100vw;
-      height: 100vh;
+      /* Substituir 100vh por calc(var(--vh) * 100) */
+      height: calc(var(--vh) * 100);
       background: #fff;
       display: flex;
       flex-direction: column;
@@ -167,13 +171,15 @@
     .full-screen-content button:hover {
       background: #ff99cc;
     }
-    /* Global Loading Screen */
+
+    /* ------------------ GLOBAL LOADING SCREEN --------------------------- */
     .global-loading {
       position: fixed;
       top: 0;
       left: 0;
       width: 100vw;
-      height: 100vh;
+      /* Substituir 100vh por calc(var(--vh) * 100) */
+      height: calc(var(--vh) * 100);
       background: #fce4ec;
       display: flex;
       flex-direction: column;
@@ -209,15 +215,23 @@
       animation: spin 1s linear infinite;
       margin: 20px auto;
     }
-    @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-    @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-    /* Action Loading Screen */
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    @keyframes slideUp {
+      from { transform: translateY(20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    /* ----------------- ACTION LOADING SCREEN --------------------------- */
     .action-loading {
       position: fixed;
       top: 0;
       left: 0;
       width: 100vw;
-      height: 100vh;
+      /* Substituir 100vh por calc(var(--vh) * 100) */
+      height: calc(var(--vh) * 100);
       background: #fce4ec;
       display: flex;
       flex-direction: column;
@@ -234,13 +248,15 @@
       text-align: center;
       color: #ff66b2;
     }
-    /* Modal de Confirmação */
+
+    /* ------------------ MODAL DE CONFIRMAÇÃO --------------------------- */
     .confirm-modal {
       position: fixed;
       top: 0;
       left: 0;
       width: 100vw;
-      height: 100vh;
+      /* Substituir 100vh por calc(var(--vh) * 100) */
+      height: calc(var(--vh) * 100);
       background: rgba(0,0,0,0.7);
       display: flex;
       justify-content: center;
@@ -248,8 +264,12 @@
       z-index: 12000;
       transition: opacity 0.3s;
     }
-    .confirm-modal.show { opacity: 1; }
-    .confirm-modal.hidden { display: none; }
+    .confirm-modal.show {
+      opacity: 1;
+    }
+    .confirm-modal.hidden {
+      display: none;
+    }
     .confirm-modal-content {
       background: #fff;
       color: #333;
@@ -287,7 +307,8 @@
       from { transform: scale(0.8); opacity: 0; }
       to { transform: scale(1); opacity: 1; }
     }
-    /* Popup de Tradução */
+
+    /* ------------------ POPUP DE TRADUÇÃO ----------------------------- */
     .translate-popup {
       position: fixed;
       top: 20px;
@@ -301,14 +322,18 @@
       transition: opacity 0.5s;
       opacity: 0;
     }
-    .translate-popup.show { opacity: 1; }
-    /* Modo de Jogo */
+    .translate-popup.show {
+      opacity: 1;
+    }
+
+    /* --------------------- MODO DE JOGO ------------------------------- */
     .game-container {
       position: fixed;
       top: 0;
       left: 0;
       width: 100vw;
-      height: 100vh;
+      /* Substituir 100vh por calc(var(--vh) * 100) */
+      height: calc(var(--vh) * 100);
       background: black;
       overflow: hidden;
       z-index: 5;
@@ -320,7 +345,8 @@
       object-fit: cover;
       cursor: pointer;
     }
-    /* Caixa de Diálogo */
+
+    /* --------------------- CAIXA DE DIÁLOGO --------------------------- */
     .dialog-box {
       position: absolute;
       bottom: 30%;
@@ -341,7 +367,7 @@
       overflow: hidden;
       transition: all 0.3s;
     }
-    /* Tema Masculino – Caixa de Diálogo do Player (fundo padrão e bordas azuis) */
+    /* Tema Masculino – Caixa de Diálogo do Player */
     .dialog-box.masculine {
       background: #e0e0e0;
       color: #333;
@@ -386,6 +412,7 @@
     .dialog-buttons button:hover {
       background: rgba(0, 0, 0, 0.7);
     }
+
     /* Container para Escolhas */
     .choice-container {
       position: absolute;
@@ -418,7 +445,6 @@
   </style>
 </head>
 <body>
-
   <!-- Música Tema -->
   <audio id="theme-music" src="theme-music.mp3" autoplay loop></audio>
 
@@ -426,7 +452,7 @@
   <div class="sidebar" id="sidebar">
     <div class="logo">
       <img src="https://via.placeholder.com/150?text=Logo" alt="Logo">
-      <span>Meu Jogo</span>
+      <span>MEU JOGO</span>
     </div>
     <div class="menu">
       <button onclick="confirmStart()">Começar</button>
@@ -447,11 +473,13 @@
     <p>Aqui você pode ajustar as configurações do jogo.</p>
     <button onclick="backToMenu()">Voltar</button>
   </div>
+
   <div id="content-store" class="content full-screen-content hidden">
     <h2>Loja</h2>
     <p>Aqui você pode comprar itens e upgrades.</p>
     <button onclick="backToMenu()">Voltar</button>
   </div>
+
   <div id="content-exit" class="content full-screen-content hidden">
     <h2>Sair</h2>
     <p>Você optou por sair do jogo.</p>
@@ -506,6 +534,23 @@
   </div>
 
   <script>
+    /*
+      ATUALIZA A VARIÁVEL --vh SEMPRE QUE A TELA É REDIMENSIONADA
+      OU QUANDO A ORIENTAÇÃO MUDA (portrait <-> landscape).
+      Isso corrige problemas de "100vh" em mobile.
+    */
+    function setRealViewportHeight() {
+      const vh = window.innerHeight * 0.01;
+      document.documentElement.style.setProperty('--vh', `${vh}px`);
+    }
+    window.addEventListener('load', setRealViewportHeight);
+    window.addEventListener('resize', setRealViewportHeight);
+    window.addEventListener('orientationchange', setRealViewportHeight);
+
+    /* ---------------------------------------------------------
+       SEU SCRIPT PRINCIPAL (CENAS, FUNÇÕES DE JOGO, ETC.)
+       --------------------------------------------------------- */
+
     let currentScene = 0;
     let autoMode = false;
     let autoInterval;
@@ -514,13 +559,10 @@
 
     // Função para exibir o conteúdo full-screen e ocultar o menu principal
     function showContent(contentName) {
-      // Oculta o menu principal
       document.getElementById("sidebar").style.display = "none";
-      // Esconde todas as telas de conteúdo
       document.querySelectorAll(".full-screen-content").forEach(content => {
         content.classList.add("hidden");
       });
-      // Exibe a tela solicitada
       const selectedContent = document.getElementById("content-" + contentName);
       if (selectedContent) {
         selectedContent.classList.remove("hidden");
@@ -529,11 +571,9 @@
 
     // Função para voltar ao menu principal
     function backToMenu() {
-      // Oculta as telas full-screen
       document.querySelectorAll(".full-screen-content").forEach(content => {
         content.classList.add("hidden");
       });
-      // Exibe o menu principal
       document.getElementById("sidebar").style.display = "flex";
     }
 
@@ -569,254 +609,15 @@
       ]
     };
 
-    // Atualiza a cena: imagem, diálogo e exibe escolhas
-    function updateScene() {
-      const choicesContainer = document.getElementById('choices');
-      choicesContainer.innerHTML = "";
-      choicesContainer.classList.remove("show");
-      
-      document.getElementById('game-image').src = scenes[currentScene].img;
-      
-      let dialogHTML = "";
-      const dialogBox = document.getElementById('game-dialog');
-      dialogBox.classList.remove("neutral", "masculine", "feminine");
-      if (scenes[currentScene].speaker) {
-        let speakerName = scenes[currentScene].speaker === "player" ? "Você" : "Personagem";
-        dialogHTML += `<div class="speaker">${speakerName}</div>`;
-      }
-      dialogHTML += `<div class="dialog-text">${translations[currentScene].pt}</div>`;
-      dialogBox.innerHTML = dialogHTML;
-      
-      if (!scenes[currentScene].speaker) {
-        dialogBox.classList.add("neutral");
-      } else if (scenes[currentScene].speaker === "player") {
-        dialogBox.classList.add("masculine");
-      } else if (scenes[currentScene].speaker === "character") {
-        dialogBox.classList.add("feminine");
-      }
-      
-      if (scenes[currentScene].choice) {
-        let choicesHTML = "";
-        const choices = choiceTranslations[currentScene];
-        choices.forEach((option, index) => {
-          choicesHTML += `<button onclick="choose(${scenes[currentScene].choice[index].next})">${option.pt}</button>`;
-        });
-        choicesContainer.innerHTML = choicesHTML;
-        void choicesContainer.offsetWidth;
-        choicesContainer.classList.add("show");
-      }
-      saveProgress();
-    }
-
-    function saveProgress() {
-      localStorage.setItem("currentScene", currentScene);
-      localStorage.setItem("currentLang", currentLang);
-    }
-
-    function loadGame() {
-      const saved = localStorage.getItem("currentScene");
-      if (saved !== null) {
-        currentScene = parseInt(saved);
-        startGameWithActionLoading();
-      } else {
-        alert("Nenhum progresso salvo encontrado.");
-      }
-    }
-
-    function choose(nextIndex) {
-      currentScene = nextIndex;
-      updateScene();
-    }
-
-    function nextScene() {
-      if (scenes[currentScene].choice) return;
-      if (currentScene < scenes.length - 1) {
-        currentScene++;
-        updateScene();
-      }
-    }
-
-    function prevScene() {
-      if (currentScene > 0) {
-        currentScene--;
-        updateScene();
-      }
-    }
-
-    // Botão "Pular": pula para a próxima cena com escolha
-    function pular() {
-      let nextChoiceScene = currentScene;
-      while (nextChoiceScene < scenes.length - 1) {
-        nextChoiceScene++;
-        if (scenes[nextChoiceScene].choice) break;
-      }
-      currentScene = nextChoiceScene;
-      updateScene();
-    }
-
-    // Botão "Avançar": auto-avança rápido até encontrar uma cena com escolha
-    function avancarRapido() {
-      const fastInterval = setInterval(() => {
-        if (scenes[currentScene].choice) {
-          clearInterval(fastInterval);
-        } else if (currentScene < scenes.length - 1) {
-          currentScene++;
-          updateScene();
-        } else {
-          clearInterval(fastInterval);
-        }
-      }, 300);
-    }
-
-    // Auto Play com intervalo padrão (1500ms)
-    function autoPlay() {
-      autoMode = !autoMode;
-      if (autoMode) {
-        autoInterval = setInterval(() => {
-          if (scenes[currentScene].choice) {
-            clearInterval(autoInterval);
-            autoMode = false;
-          } else {
-            if (currentScene < scenes.length - 1) {
-              currentScene++;
-              updateScene();
-            } else {
-              clearInterval(autoInterval);
-              autoMode = false;
-            }
-          }
-        }, 1500);
-      } else {
-        clearInterval(autoInterval);
-      }
-    }
-
-    // Modal de Confirmação para novo jogo
-    function confirmStart() {
-      document.getElementById("confirm-modal").classList.remove("hidden");
-      document.getElementById("confirm-modal").classList.add("show");
-    }
-
-    function startNewGame() {
-      currentScene = 0;
-      localStorage.removeItem("currentScene");
-      hideConfirmModal();
-      startGameWithActionLoading();
-    }
-
-    function hideConfirmModal() {
-      const modal = document.getElementById("confirm-modal");
-      modal.classList.remove("show");
-      setTimeout(() => {
-        modal.classList.add("hidden");
-      }, 300);
-    }
-
-    // Função para fade out dos elementos de loading e iniciar o jogo
-    function startGameWithActionLoading() {
-      if (globalLoadingTimeout) {
-        clearTimeout(globalLoadingTimeout);
-      }
-      const globalLoad = document.getElementById("global-loading");
-      if (globalLoad && globalLoad.style.display !== "none") {
-        globalLoad.style.transition = "opacity 0.5s";
-        globalLoad.style.opacity = "0";
-        globalLoad.addEventListener("transitionend", () => {
-          globalLoad.style.display = "none";
-          globalLoad.style.opacity = "1";
-        }, {once: true});
-      }
-      const actionLoad = document.getElementById("action-loading");
-      actionLoad.classList.remove("hidden");
-      actionLoad.style.display = "flex";
-      setTimeout(() => {
-         actionLoad.style.transition = "opacity 0.5s";
-         actionLoad.style.opacity = "0";
-         actionLoad.addEventListener("transitionend", () => {
-              actionLoad.style.display = "none";
-              actionLoad.style.opacity = "1";
-         }, {once: true});
-         startGame();
-      }, 1000);
-    }
-
-    function startGame() {
-      document.getElementById('sidebar').style.opacity = "0";
-      document.querySelectorAll('.full-screen-content').forEach(content => content.classList.add('hidden'));
-      document.getElementById('game').style.display = "block";
-      updateScene();
-    }
-
-    function exitGame() {
-      document.getElementById('game').style.display = "none";
-      document.getElementById('sidebar').style.opacity = "1";
-    }
-
-    // Função de Tradução
-    function translateContent(lang) {
-      const popup = document.getElementById("translate-popup");
-      if (lang === "en") {
-        popup.innerText = "A tradução para o idioma solicitado encontra-se indisponível no momento. Por favor, tente novamente mais tarde.";
-        popup.classList.remove("hidden");
-        popup.classList.add("show");
-        setTimeout(() => {
-          popup.classList.remove("show");
-          popup.classList.add("hidden");
-        }, 2000);
-        return;
-      }
-      if (lang === currentLang) {
-        popup.innerText = "Idioma já selecionado.";
-        popup.classList.remove("hidden");
-        popup.classList.add("show");
-        setTimeout(() => {
-          popup.classList.remove("show");
-          popup.classList.add("hidden");
-        }, 2000);
-        return;
-      }
-      currentLang = lang;
-      document.querySelectorAll('.language-selector img').forEach(img => {
-        if (lang === "pt" && img.alt.toLowerCase().includes("português")) {
-          img.classList.add("active");
-        } else {
-          img.classList.remove("active");
-        }
-      });
-      saveProgress();
-      popup.innerText = "Idioma alterado.";
-      popup.classList.remove("hidden");
-      popup.classList.add("show");
-      setTimeout(() => {
-        popup.classList.remove("show");
-        popup.classList.add("hidden");
-      }, 2000);
-      updateScene();
-    }
-
-    window.onload = function() {
-      globalLoadingTimeout = setTimeout(() => {
-        const globalLoad = document.getElementById("global-loading");
-        if (globalLoad) {
-          globalLoad.style.transition = "opacity 0.5s";
-          globalLoad.style.opacity = "0";
-          globalLoad.addEventListener("transitionend", () => {
-            globalLoad.style.display = "none";
-            globalLoad.style.opacity = "1";
-          }, {once: true});
-        }
-      }, 2000);
-    };
-
-    /* Definição das Cenas – Exemplo com 16 cenas */
+    // Define as cenas
     const scenes = [
       { img: "https://raw.githubusercontent.com/natrona/nekoserver/refs/heads/main/download%20(15).jpeg", speaker: null, choice: null },
       { img: "https://via.placeholder.com/1920x1080/FF99CC/FFFFFF?text=Cena+2", speaker: null, choice: null },
       { img: "https://via.placeholder.com/1920x1080/FFB6C1/FFFFFF?text=Cena+3", speaker: "player", choice: null },
       { img: "https://via.placeholder.com/1920x1080/FFD1DC/FFFFFF?text=Cena+4", speaker: null, choice: null },
       { img: "https://via.placeholder.com/1920x1080/FFC0CB/FFFFFF?text=Cena+5", speaker: null, choice: null },
-      { 
-        img: "https://via.placeholder.com/1920x1080/FF69B4/FFFFFF?text=Cena+6", 
+      {
+        img: "https://via.placeholder.com/1920x1080/FF69B4/FFFFFF?text=Cena+6",
         speaker: null,
         choice: [
           { next: 6 },
@@ -829,8 +630,8 @@
       { img: "https://via.placeholder.com/1920x1080/FF6EB4/FFFFFF?text=Cena+10", speaker: "player", choice: null },
       { img: "https://via.placeholder.com/1920x1080/FF82AB/FFFFFF?text=Cena+11", speaker: null, choice: null },
       { img: "https://via.placeholder.com/1920x1080/FFB6C1/FFFFFF?text=Cena+12", speaker: null, choice: null },
-      { 
-        img: "https://via.placeholder.com/1920x1080/FFC0CB/FFFFFF?text=Cena+13", 
+      {
+        img: "https://via.placeholder.com/1920x1080/FFC0CB/FFFFFF?text=Cena+13",
         speaker: "character",
         choice: [
           { next: 13 },
@@ -838,30 +639,4 @@
         ]
       },
       { img: "https://via.placeholder.com/1920x1080/FF69B4/FFFFFF?text=Cena+14", speaker: "character", choice: null },
-      { img: "https://via.placeholder.com/1920x1080/FF1493/FFFFFF?text=Cena+15", speaker: null, choice: null },
-      { img: "https://via.placeholder.com/1920x1080/AA66B2/FFFFFF?text=Cena+16", speaker: "character", choice: null }
-    ];
-  </script>
-
-<audio id="click-sound" src="https://natrona.github.io/nekoserver/click_sound.wav"></audio>
-
-<script>
-  const audio = document.getElementById("click-sound");
-  const volume = 0.1; // Defina o volume de 0.0 (mudo) a 1.0 (máximo)
-  audio.volume = volume;
-  
-  document.addEventListener("click", (e) => {
-    if (e.target.tagName === "BUTTON") {
-      audio.currentTime = 0;
-      audio.play();
-    }
-  });
-</script>
-
-
-
-</body>
-</html>
-  
-</body>
-</html>
+      { img: "https://via.placeholder.com/1
