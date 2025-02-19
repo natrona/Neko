@@ -2,11 +2,8 @@
 <html lang="pt">
 <head>
   <meta charset="UTF-8">
-  <!-- Ajuste o meta viewport para suportar 'viewport-fit=cover' e evitar zoom -->
-  <meta name="viewport" 
-        content="width=device-width, initial-scale=1.0,
-                 maximum-scale=1.0, user-scalable=no,
-                 viewport-fit=cover">
+  <!-- Meta viewport com viewport-fit=cover para dispositivos com notch -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>Jogo 2D</title>
   <!-- Fonte Poppins -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
@@ -25,10 +22,7 @@
       user-select: none;
     }
 
-    /* 
-      html e body ocupam a tela inteira usando a variável --vh,
-      evitando scroll em dispositivos móveis quando a barra some/aparece.
-    */
+    /* html e body usam a variável --vh para ocupar a altura real disponível */
     html, body {
       width: 100vw;
       height: calc(var(--vh) * 100);
@@ -37,23 +31,51 @@
       background: linear-gradient(to right, #ff99cc, #ff66b2);
     }
 
-    /* Responsividade para dispositivos móveis em horizontal */
-    @media only screen and (max-width: 768px) and (orientation: landscape) {
-      .sidebar { width: 250px; padding: 15px; }
-      .menu button { font-size: 20px; padding: 12px; }
-      .content { font-size: 24px; }
-      .dialog-box { max-width: 400px; padding: 12px; font-size: 16px; }
-      .dialog-buttons button { font-size: 14px; padding: 4px 8px; }
-      .language-selector img { width: 28px; height: 28px; }
+    /* ---------------- RESPONSIVIDADE PARA LANDSCAPE ---------------- */
+    @media only screen and (orientation: landscape) {
+      /* Reduz a largura da sidebar para 25% da tela */
+      .sidebar {
+        width: 25vw;
+        padding: 15px;
+      }
+      .menu button {
+        font-size: 20px;
+        padding: 12px;
+      }
+      .content {
+        font-size: 24px;
+      }
+      .dialog-box {
+        max-width: 400px;
+        padding: 12px;
+        font-size: 16px;
+        bottom: 20%;
+      }
+      .dialog-buttons button {
+        font-size: 14px;
+        padding: 4px 8px;
+      }
+      .language-selector img {
+        width: 28px;
+        height: 28px;
+      }
+      /* Reposiciona os containers de conteúdo para não sobrepor a sidebar */
+      .full-screen-content,
+      .global-loading,
+      .action-loading,
+      .confirm-modal,
+      .game-container {
+        left: 25vw;
+        width: calc(100vw - 25vw);
+      }
     }
 
-    /* --------------------- SIDEBAR (Menu Principal) -------------------- */
+    /* --------------------- SIDEBAR (Menu Principal) --------------------- */
     .sidebar {
       position: fixed;
       top: 0;
       left: 0;
       width: 300px;
-      /* Substituir 100vh por calc(var(--vh) * 100) */
       height: calc(var(--vh) * 100);
       background: rgba(255,105,180,0.9);
       border-right: 4px solid white;
@@ -101,8 +123,7 @@
       color: #ff66b2;
       border-color: #ff66b2;
     }
-
-    /* Seletor de idioma – ícones modernos */
+    /* Seletor de idioma */
     .language-selector {
       margin-top: auto;
       display: flex;
@@ -126,18 +147,17 @@
       transform: scale(1.1);
     }
 
-    /* Música Tema (oculta controles) */
+    /* ------------------ MÚSICA TEMA (oculta controles) ------------------ */
     audio {
       display: none;
     }
 
-    /* ---------------- FULL-SCREEN CONTENT (Config, Loja, Sair) --------- */
+    /* --------------- TELAS FULL-SCREEN (Configurações, Loja, Sair) --------------- */
     .full-screen-content {
       position: fixed;
       top: 0;
       left: 0;
       width: 100vw;
-      /* Substituir 100vh por calc(var(--vh) * 100) */
       height: calc(var(--vh) * 100);
       background: #fff;
       display: flex;
@@ -178,7 +198,6 @@
       top: 0;
       left: 0;
       width: 100vw;
-      /* Substituir 100vh por calc(var(--vh) * 100) */
       height: calc(var(--vh) * 100);
       background: #fce4ec;
       display: flex;
@@ -224,13 +243,12 @@
       to { transform: translateY(0); opacity: 1; }
     }
 
-    /* ----------------- ACTION LOADING SCREEN --------------------------- */
+    /* ------------------ ACTION LOADING SCREEN --------------------------- */
     .action-loading {
       position: fixed;
       top: 0;
       left: 0;
       width: 100vw;
-      /* Substituir 100vh por calc(var(--vh) * 100) */
       height: calc(var(--vh) * 100);
       background: #fce4ec;
       display: flex;
@@ -249,13 +267,12 @@
       color: #ff66b2;
     }
 
-    /* ------------------ MODAL DE CONFIRMAÇÃO --------------------------- */
+    /* --------------------- MODAL DE CONFIRMAÇÃO --------------------------- */
     .confirm-modal {
       position: fixed;
       top: 0;
       left: 0;
       width: 100vw;
-      /* Substituir 100vh por calc(var(--vh) * 100) */
       height: calc(var(--vh) * 100);
       background: rgba(0,0,0,0.7);
       display: flex;
@@ -308,7 +325,7 @@
       to { transform: scale(1); opacity: 1; }
     }
 
-    /* ------------------ POPUP DE TRADUÇÃO ----------------------------- */
+    /* --------------------- POPUP DE TRADUÇÃO ----------------------------- */
     .translate-popup {
       position: fixed;
       top: 20px;
@@ -332,7 +349,6 @@
       top: 0;
       left: 0;
       width: 100vw;
-      /* Substituir 100vh por calc(var(--vh) * 100) */
       height: calc(var(--vh) * 100);
       background: black;
       overflow: hidden;
@@ -363,7 +379,6 @@
       background: #e0e0e0;
       color: #333;
       border: 1px solid #999;
-      position: relative;
       overflow: hidden;
       transition: all 0.3s;
     }
@@ -413,7 +428,7 @@
       background: rgba(0, 0, 0, 0.7);
     }
 
-    /* Container para Escolhas */
+    /* ----------------- CONTAINER PARA ESCOLHAS ------------------------ */
     .choice-container {
       position: absolute;
       left: 50%;
@@ -473,13 +488,11 @@
     <p>Aqui você pode ajustar as configurações do jogo.</p>
     <button onclick="backToMenu()">Voltar</button>
   </div>
-
   <div id="content-store" class="content full-screen-content hidden">
     <h2>Loja</h2>
     <p>Aqui você pode comprar itens e upgrades.</p>
     <button onclick="backToMenu()">Voltar</button>
   </div>
-
   <div id="content-exit" class="content full-screen-content hidden">
     <h2>Sair</h2>
     <p>Você optou por sair do jogo.</p>
@@ -534,11 +547,7 @@
   </div>
 
   <script>
-    /*
-      ATUALIZA A VARIÁVEL --vh SEMPRE QUE A TELA É REDIMENSIONADA
-      OU QUANDO A ORIENTAÇÃO MUDA (portrait <-> landscape).
-      Isso corrige problemas de "100vh" em mobile.
-    */
+    // Atualiza a variável CSS --vh com a altura real da viewport
     function setRealViewportHeight() {
       const vh = window.innerHeight * 0.01;
       document.documentElement.style.setProperty('--vh', `${vh}px`);
@@ -547,17 +556,13 @@
     window.addEventListener('resize', setRealViewportHeight);
     window.addEventListener('orientationchange', setRealViewportHeight);
 
-    /* ---------------------------------------------------------
-       SEU SCRIPT PRINCIPAL (CENAS, FUNÇÕES DE JOGO, ETC.)
-       --------------------------------------------------------- */
-
+    /* ---------------- SEU SCRIPT PRINCIPAL ---------------- */
     let currentScene = 0;
     let autoMode = false;
     let autoInterval;
     let currentLang = "pt"; // idioma atual
     let globalLoadingTimeout;
 
-    // Função para exibir o conteúdo full-screen e ocultar o menu principal
     function showContent(contentName) {
       document.getElementById("sidebar").style.display = "none";
       document.querySelectorAll(".full-screen-content").forEach(content => {
@@ -569,7 +574,6 @@
       }
     }
 
-    // Função para voltar ao menu principal
     function backToMenu() {
       document.querySelectorAll(".full-screen-content").forEach(content => {
         content.classList.add("hidden");
@@ -577,7 +581,6 @@
       document.getElementById("sidebar").style.display = "flex";
     }
 
-    /* Dicionário para Traduções para as Cenas */
     const translations = {
       0: { pt: "Você acorda em um quarto estranho. Não lembra como chegou aqui." },
       1: { pt: "Você vê uma porta entreaberta e uma janela com vista para um jardim iluminado pelo sol." },
@@ -597,7 +600,6 @@
       15: { pt: "A personagem diz: 'Bem-vindo ao mundo de aventuras!'" }
     };
 
-    /* Dicionário para Traduções das Escolhas */
     const choiceTranslations = {
       5: [
         { pt: "Investigar o corredor" },
@@ -609,15 +611,14 @@
       ]
     };
 
-    // Define as cenas
     const scenes = [
       { img: "https://raw.githubusercontent.com/natrona/nekoserver/refs/heads/main/download%20(15).jpeg", speaker: null, choice: null },
       { img: "https://via.placeholder.com/1920x1080/FF99CC/FFFFFF?text=Cena+2", speaker: null, choice: null },
       { img: "https://via.placeholder.com/1920x1080/FFB6C1/FFFFFF?text=Cena+3", speaker: "player", choice: null },
       { img: "https://via.placeholder.com/1920x1080/FFD1DC/FFFFFF?text=Cena+4", speaker: null, choice: null },
       { img: "https://via.placeholder.com/1920x1080/FFC0CB/FFFFFF?text=Cena+5", speaker: null, choice: null },
-      {
-        img: "https://via.placeholder.com/1920x1080/FF69B4/FFFFFF?text=Cena+6",
+      { 
+        img: "https://via.placeholder.com/1920x1080/FF69B4/FFFFFF?text=Cena+6", 
         speaker: null,
         choice: [
           { next: 6 },
@@ -630,8 +631,8 @@
       { img: "https://via.placeholder.com/1920x1080/FF6EB4/FFFFFF?text=Cena+10", speaker: "player", choice: null },
       { img: "https://via.placeholder.com/1920x1080/FF82AB/FFFFFF?text=Cena+11", speaker: null, choice: null },
       { img: "https://via.placeholder.com/1920x1080/FFB6C1/FFFFFF?text=Cena+12", speaker: null, choice: null },
-      {
-        img: "https://via.placeholder.com/1920x1080/FFC0CB/FFFFFF?text=Cena+13",
+      { 
+        img: "https://via.placeholder.com/1920x1080/FFC0CB/FFFFFF?text=Cena+13", 
         speaker: "character",
         choice: [
           { next: 13 },
@@ -639,4 +640,13 @@
         ]
       },
       { img: "https://via.placeholder.com/1920x1080/FF69B4/FFFFFF?text=Cena+14", speaker: "character", choice: null },
-      { img: "https://via.placeholder.com/1
+      { img: "https://via.placeholder.com/1920x1080/FF1493/FFFFFF?text=Cena+15", speaker: null, choice: null },
+      { img: "https://via.placeholder.com/1920x1080/AA66B2/FFFFFF?text=Cena+16", speaker: "character", choice: null }
+    ];
+
+    function updateScene() {
+      const choicesContainer = document.getElementById('choices');
+      choicesContainer.innerHTML = "";
+      choicesContainer.classList.remove("show");
+
+      document.getElementById('game-image').src = scenes
